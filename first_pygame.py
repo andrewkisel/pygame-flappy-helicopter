@@ -1,5 +1,6 @@
 import pygame
 import time
+import random
 
 black = (0, 0, 0)
 white = (255, 255, 255)
@@ -7,9 +8,12 @@ white = (255, 255, 255)
 # Initializing.
 pygame.init()
 
-# Define game surface.
 surface_width = 800
 surface_height = 500
+image_height = 64
+image_width = 64
+
+# Define game surface.
 surface = pygame.display.set_mode((surface_width, surface_height))
 
 # Title
@@ -20,6 +24,11 @@ clock = pygame.time.Clock()
 
 # Loading helicopter image
 img = pygame.image.load('helicopter.png')
+
+
+def blocks(x_block, y_block, block_width, block_height, gap):
+    pygame.draw.rect(surface, white, [x_block, y_block, block_width, block_height])
+    pygame.draw.rect(surface, white, [x_block, y_block + block_height + gap, block_width, block_height])
 
 
 # Handle press any key to continue.
@@ -80,6 +89,14 @@ def main():
     # Variable to render helicopter movements along y axis.
     y_move = 0
 
+    x_block = surface_width
+    y_block = 0
+    block_width = 75
+    block_height = random.randint(0, surface_height)
+    gap = image_height * 2
+    # How fast the blocks move.
+    block_move = 3
+
     game_over = False
 
     # Game loop
@@ -104,6 +121,10 @@ def main():
         surface.fill(black)
         # Put a helicopter icon on the surface.
         helicopter(x, y, img)
+
+        blocks(x_block, y_block, block_width, block_height, gap)
+        # Move blocks.
+        x_block -= block_move
 
         # Check if helicopter went out of boundaries.
         if y > surface_height - 64 or y < 0:
