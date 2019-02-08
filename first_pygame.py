@@ -11,8 +11,8 @@ pygame.init()
 
 surface_width = 800
 surface_height = 500
-image_height = 32
-image_width = 32
+image_height = 25
+image_width = 25
 
 # Define game surface.
 surface = pygame.display.set_mode((surface_width, surface_height))
@@ -25,6 +25,12 @@ clock = pygame.time.Clock()
 
 # Loading helicopter image
 img = pygame.image.load('helicopter.png')
+
+
+def score(count):
+    font = pygame.font.Font('freesansbold.ttf', 20)
+    text = font.render('Score: %s' % str(count), True, white)
+    surface.blit(text, (0, 0))
 
 
 def blocks(x_block, y_block, block_width, block_height, gap):
@@ -95,10 +101,13 @@ def main():
     y_block = 0
     block_width = 75
     block_height = random.randint(0, (surface_height / 2))
-    gap = image_height * 4
+    gap = image_height * 6
 
     # How fast the blocks move.
     block_move = 5
+
+    # Score variable.
+    current_score = 0
 
     game_over = False
 
@@ -125,12 +134,15 @@ def main():
         # Put a helicopter icon on the surface.
         helicopter(x, y, img)
 
+        # Update score.
+        score(current_score)
+
         blocks(x_block, y_block, block_width, block_height, gap)
         # Move blocks.
         x_block -= block_move
 
         # Check if helicopter went out of boundaries.
-        if y > surface_height - 64 or y < 0:
+        if y > surface_height - image_height or y < -image_height:
             gameover()
         # Check if block has moved out of the screen.
         if x_block < (-1 * block_width):
@@ -141,17 +153,21 @@ def main():
         # Check if we crashed into the block.
         if x + image_width > x_block:
             if x < x_block + block_width:
-                print('Possibly within the boundaries of x')
+                # print('Possibly within the boundaries of x')
                 if y < block_height:
-                    print('y crossover upper!')
+                    # print('y crossover upper!')
                     if x - image_width < block_width + x_block:
-                        print('game over. hit upper.')
+                        # print('game over. hit upper.')
                         gameover()
             if y + image_height > block_height + gap:
-                print('y crossover lower')
+                # print('y crossover lower')
                 if x < block_width + x_block:
-                    print('Game over lower')
+                    # print('Game over lower')
                     gameover()
+
+        # Update score when you passed the gap.
+        if x < x_block + 1 and x > x_block - block_move:
+            current_score += 1
 
         # Updating specific areas on the screen. If empty parameters - everything is updated.
         pygame.display.update()
