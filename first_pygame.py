@@ -16,9 +16,6 @@ surface_height = 500
 image_height = 25
 image_width = 25
 
-# Difficulty setting.
-difficulty = 5
-
 # Define game surface.
 surface = pygame.display.set_mode((surface_width, surface_height))
 
@@ -101,15 +98,18 @@ def main():
     # Variable to render helicopter movements along y axis.
     y_move = 0
 
+    # Difficulty setting.
+    difficulty = 5
+
     # Block coordinates and size
     x_block = surface_width
     y_block = 0
     block_width = 75
     block_height = random.randint(0, (surface_height / 2))
-    gap = image_height * difficulty
+    gap = image_height * 4
 
     # How fast the blocks move.
-    block_move = difficulty
+    block_move = 5
 
     # Score variable.
     current_score = 0
@@ -126,11 +126,11 @@ def main():
             if event.type == pygame.KEYDOWN:
                 # Get specific key that is pressed.
                 if event.key == pygame.K_UP:
-                    y_move = -difficulty
+                    y_move = -5
             # Case when releasing the key.
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_UP:
-                    y_move = difficulty
+                    y_move = 5
 
         y += y_move
 
@@ -173,6 +173,10 @@ def main():
         # Update score when you passed the gap.
         if x < x_block + 1 and x > x_block - block_move:
             current_score += 1
+            difficulty += 1
+            block_move += 1
+            if current_score % 10 == 0:
+                gap -= 5
 
         # Updating specific areas on the screen. If empty parameters - everything is updated.
         pygame.display.update()
